@@ -6,7 +6,6 @@ const connection = async () => {
       dbName: "QuanLyNhaDat",
     };
     await mongoose.connect(process.env.DB_HOST, options);
-    console.log(mongoose.connection.readyState);
   } catch (error) {
     console.log("ERRROR:>>>>", error);
   }

@@ -13,7 +13,7 @@ app.use("/v1/user", userModel);
   try {
     await connection();
     app.listen(process.env.LISTEN_PORT, () => {
-      console.log("Backend Running");
+      console.log("OK");
     });
   } catch (error) {
     console.log(">>>> Error Connect to DB:", error);
