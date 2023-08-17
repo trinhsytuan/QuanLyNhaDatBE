@@ -6,8 +6,9 @@ const userModel = require("./src/controllers/User/User");
 app.use(express.urlencoded({ extended: true }));
 var cors = require("cors");
 const connection = require("./src/config/database");
+
 app.use(cors({ credentials: true, origin: "*" }));
-app.use("/v1/user", userModel);
+app.use("/api/v1/user", userModel);
 
 (async () => {
   try {

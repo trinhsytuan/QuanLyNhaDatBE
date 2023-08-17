@@ -1,24 +1,24 @@
 var nodemailer = require("nodemailer"); // khai báo sử dụng module nodemailer
-require('dotenv').config()
+require("dotenv").config();
 var transporter = nodemailer.createTransport({
   service: "Gmail",
+  name: "TServices",
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
 });
 
-const registerRegisty = (toEmail, token) => {
+const registerRegisty = (toEmail, username, password) => {
   var registerFrom = {
-    from: "TBlog",
+    from: "TServices",
     to: toEmail,
-    subject: "Thông báo xác thực tài khoản",
-    html:
-      '<p style="text-align:center"><img alt="" src="https://ckeditor.com/apps/ckfinder/userfiles/files/TBlogNotRemove.png" style="height:84px; width:280px" /></p><p style="text-align:center">&nbsp;</p><p style="text-align:center"><span style="font-family:Times New Roman,Times,serif"><span style="font-size:14px"><strong>Y&Ecirc;U CẦU X&Aacute;C THỰC T&Agrave;I KHOẢN</strong></span></span></p><p>Ch&agrave;o bạn đ&atilde; đăng k&yacute; t&agrave;i khoản tại TBlog</p><p>Để k&iacute;ch hoạt t&agrave;i khoản của bạn, bạn cần phải nhấp v&agrave;o li&ecirc;n kết sau: ' +
-      process.env.LINKWEB +
-      "/" +
-      token +
-      "</p><p>&nbsp;</p><p>Cảm ơn bạn đ&atilde; đăng k&yacute; TBlog!</p>",
+    subject: "Thông báo tài khoản mới",
+    html: `
+      <h4>Bạn đã được tạo tài khoản mới trong hệ thống quản lý nhà đất</h4>
+<h5>Tài khoản:${username}</h5>
+</br>
+<h5>Mật khẩu: ${password}</h5>`,
   };
 
   transporter.sendMail(registerFrom, function (err, info) {
@@ -29,4 +29,4 @@ const registerRegisty = (toEmail, token) => {
     }
   });
 };
-module.exports={registerRegisty}
+module.exports = { registerRegisty };
