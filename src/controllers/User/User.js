@@ -65,7 +65,8 @@ const userRegister = async (req, res) => {
   }
 };
 const myInfo = async (req, res) => {
-  return res.status(200).json(req.decodeToken);
+  const infoUser = await userDB.findOne({ _id: req.decodeToken._id });
+  return res.status(200).json(infoUser);
 };
 router.post("/login", userLogin);
 router.post("/register", userRegister);
