@@ -9,6 +9,7 @@ const {
   hashPassword,
   comparePasswords,
   checkToken,
+  queryUserFromDB,
 } = require("../../utils/utils");
 const { registerRegisty } = require("../../emailServices/sendEmail");
 const { WRONG_PASSWORD } = require("../../constant/CONSTANT.JS");
@@ -65,7 +66,7 @@ const userRegister = async (req, res) => {
   }
 };
 const myInfo = async (req, res) => {
-  const infoUser = await userDB.findOne({ _id: req.decodeToken._id });
+  const infoUser = await queryUserFromDB(req.decodeToken._id);
   return res.status(200).json(infoUser);
 };
 router.post("/login", userLogin);

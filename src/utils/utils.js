@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { userDB } = require("../models/userModel");
 function makeid(length) {
   let result = "";
   const characters =
@@ -45,9 +46,17 @@ async function checkToken(req, res, next) {
     });
   }
 }
+function queryUserFromDB(idUser) {
+  try {
+    return userDB.findOne({ _id: idUser });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
 module.exports = {
   makeid,
   hashPassword,
   comparePasswords,
   checkToken,
+  queryUserFromDB,
 };
