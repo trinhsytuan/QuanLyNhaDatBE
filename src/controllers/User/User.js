@@ -13,6 +13,9 @@ const {
 } = require("../../utils/utils");
 const { registerRegisty } = require("../../emailServices/sendEmail");
 const { WRONG_PASSWORD } = require("../../constant/CONSTANT.JS");
+const { imageUpload } = require("../../utils/uploadImage");
+const { URL_BASE } = require("../../constant/CONSTANT.JS");
+const { recordNewUpdate } = require("../../constant/CONSTANT.JS");
 const userLogin = async (req, res) => {
   const { username, password } = req.body;
   const infoDataUser = await userDB.findOne({ username });
@@ -69,7 +72,58 @@ const myInfo = async (req, res) => {
   const infoUser = await queryUserFromDB(req.decodeToken._id);
   return res.status(200).json(infoUser);
 };
+const updateMyInfo = async (req, res) => {
+  try {
+    const userID = req.decodeToken._id;
+    const infoNew = JSON.parse(req.body.json_data);
+    let dataUpdate = {
+      name: infoNew.name,
+      email: infoNew.email,
+      phone: infoNew.phone,
+    };
+    if (req?.file?.filename) dataUpdate.avatar = req.file.filename;
+    const updatedUser = await userDB.findOneAndUpdate(
+      { _id: userID },
+      { $set: dataUpdate },
+      recordNewUpdate
+    );
+    res.status(200).json(updatedUser);
+  } catch (e) {
+    return res.status(400).json({ success: false, message: e.toString() });
+  }
+};
+const changeNewPassword = async (req, res) => {
+  try {
+    const infoDataUser = await userDB.findOne({ _id: req.decodeToken._id });
+    const statusCode = await comparePasswords(
+      req.body.old_password,
+      infoDataUser.password
+    );
+    if (statusCode == false) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Mật khẩu cũ không đúng" });
+    }
+    const newPassword = await hashPassword(req.body.new_password);
+    const response = await userDB.findOneAndUpdate(
+      { _id: req.decodeToken._id },
+      { $set: { password: newPassword } },
+      recordNewUpdate
+    );
+    res.status(200).json(response);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ success: false, message: e.toString() });
+  }
+};
 router.post("/login", userLogin);
 router.post("/register", userRegister);
 router.get("/myInfo", checkToken, myInfo);
+router.put(
+  "/updateMyInfo",
+  checkToken,
+  imageUpload.single("avatar"),
+  updateMyInfo
+);
+router.put("/changePassword", checkToken, changeNewPassword);
 module.exports = router;

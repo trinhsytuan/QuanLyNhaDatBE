@@ -9,6 +9,7 @@ const userChema = new mongoose.Schema(
     password: { type: String, required: true },
     org: { type: String, required: true },
     type: { type: String, required: true },
+    avatar: { type: String },
   },
   { timestamps: true }
 );
