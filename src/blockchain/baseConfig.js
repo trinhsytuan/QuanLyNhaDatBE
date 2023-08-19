@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const FabricCAServices = require("fabric-ca-client");
 const { location_blockchain } = require("../constant/constant.js");
+const { computeMD5Hash } = require("../utils/utils.js");
 async function getWalletSystemByDefault() {
   const ccpPath = path.resolve(location_blockchain.WALLET_SERVER);
   let ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
@@ -58,6 +59,7 @@ async function enrollByID(userID, idSignature) {
     enrollmentSecret: secret,
   });
   const x509Identity = {
+    hashKey: computeMD5Hash(enrollment.key.toBytes()),
     user: userID,
     credentials: {
       certificate: enrollment.certificate,

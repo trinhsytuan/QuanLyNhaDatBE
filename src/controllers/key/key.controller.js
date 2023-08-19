@@ -5,6 +5,7 @@ const {
   makeid,
 } = require("../../utils/utils");
 const { pkiModel } = require("../../models/pkiModel");
+const { userDB } = require("../../models/userModel");
 const createNewKey = async (req, res) => {
   try {
     const checkIsExist = await pkiModel.findOne({ user: req.decodeToken._id });
@@ -28,6 +29,7 @@ const createNewKey = async (req, res) => {
       user: infoKeyEnroll.user,
       publicKey: infoKeyEnroll.credentials.certificate,
       idSignature,
+      hashPublicKey: infoKeyEnroll.hashKey,
     };
     const response = await pkiModel.create(infoKeyStorage);
     return res.status(200).json({
@@ -44,16 +46,29 @@ const revokeKey = async (req, res) => {
     const response = await pkiModel.deleteOne({ _id: id });
     const blockchainRevoke = await revokeIdentity(req.decodeToken._id);
     if (response.deletedCount == 1) {
-      res.status(200).json({ success: true, message: "Revoke success" });
+      res.status(200).json({ success: true, message: "Thu hồi thành công" });
     } else {
-      res.status(400).json({ success: false, message: "Revoke unsucefully" });
+      res.status(400).json({
+        success: false,
+        message: "Thu hồi không thành công, không tồn tại định danh",
+      });
     }
   } catch (e) {
     res.status(400).json({ success: false, message: JSON.stringify(e) });
   }
 };
-
+const getMyKey = async (req, res) => {
+  try {
+    const keyInfo = await pkiModel
+      .findOne({ user: req.decodeToken._id })
+      .populate("user");
+    return res.status(200).json(keyInfo);
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.toString() });
+  }
+};
 module.exports = {
   createNewKey,
   revokeKey,
+  getMyKey,
 };

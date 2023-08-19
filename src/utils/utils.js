@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { userDB } = require("../models/userModel");
 const randomstring = require("randomstring");
+const crypto = require("crypto");
+
 function makeid(length) {
   return randomstring.generate(length);
 }
@@ -46,10 +48,16 @@ function queryUserFromDB(idUser) {
   }
 }
 
+function computeMD5Hash(input) {
+  const hash = crypto.createHash("md5").update(input).digest("hex");
+  return hash;
+}
+
 module.exports = {
   makeid,
   hashPassword,
   comparePasswords,
   checkToken,
   queryUserFromDB,
+  computeMD5Hash,
 };
