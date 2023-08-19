@@ -12,10 +12,12 @@ const {
   queryUserFromDB,
 } = require("../../utils/utils");
 const { registerRegisty } = require("../../emailServices/sendEmail");
-const { WRONG_PASSWORD } = require("../../constant/CONSTANT.JS");
 const { imageUpload } = require("../../utils/uploadImage");
-const { URL_BASE } = require("../../constant/CONSTANT.JS");
-const { recordNewUpdate } = require("../../constant/CONSTANT.JS");
+const { URL_BASE } = require("../../constant/constant.js");
+const {
+  recordNewUpdate,
+  WRONG_PASSWORD,
+} = require("../../constant/constant.js");
 const userLogin = async (req, res) => {
   const { username, password } = req.body;
   const infoDataUser = await userDB.findOne({ username });

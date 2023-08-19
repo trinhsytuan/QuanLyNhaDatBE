@@ -8,12 +8,17 @@ const WRONG_PASSWORD = {
   message: "Tên đăng nhập hoặc mật khẩu không chính xác",
 };
 const URL_BASE = {
-  DIRECTORY_IMAGE: "uploads/"
-}
+  DIRECTORY_IMAGE: "uploads/",
+};
 const recordNewUpdate = { new: true }; // Trả về tài liệu mới sau khi cập nhật
+const location_blockchain = {
+  WALLET_SERVER:
+    "/root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json",
+};
 module.exports = {
   ROLE_SYSTEM,
   WRONG_PASSWORD,
   URL_BASE,
   recordNewUpdate,
+  location_blockchain,
 };
