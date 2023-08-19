@@ -1,17 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { userDB } = require("../models/userModel");
+const randomstring = require("randomstring");
 function makeid(length) {
-  let result = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
+  return randomstring.generate(length);
 }
 function hashPassword(password) {
   return bcrypt.hash(password, 10);
@@ -53,6 +45,7 @@ function queryUserFromDB(idUser) {
     throw new Error(e);
   }
 }
+
 module.exports = {
   makeid,
   hashPassword,

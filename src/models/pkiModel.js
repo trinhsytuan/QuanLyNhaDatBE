@@ -7,6 +7,7 @@ const pkeyModel = new mongoose.Schema(
     ],
     publicKey: { type: String, required: true },
     hashPublicKey: { type: String },
+    idSignature: { type: String },
   },
   { timestamps: true }
 );

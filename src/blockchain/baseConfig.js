@@ -32,7 +32,7 @@ async function getWalletSystemByUser(userID, wallet) {
   });
   return gateway;
 }
-async function enrollByID(userID) {
+async function enrollByID(userID, idSignature) {
   const ccpPath = path.resolve(location_blockchain.WALLET_SERVER);
   const ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
   const caURL = ccp.certificateAuthorities["ca.org1.example.com"].url;
@@ -48,13 +48,13 @@ async function enrollByID(userID) {
   const secret = await ca.register(
     {
       affiliation: "org1.department1",
-      enrollmentID: userID,
+      enrollmentID: idSignature,
       role: "client",
     },
     adminUser
   );
   const enrollment = await ca.enroll({
-    enrollmentID: userID,
+    enrollmentID: idSignature,
     enrollmentSecret: secret,
   });
   const x509Identity = {
