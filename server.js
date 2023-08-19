@@ -4,10 +4,12 @@ require("dotenv").config();
 const path = require("path");
 const app = express();
 const userModel = require("./src/controllers/User/User");
+const keyModal = require("./src/controllers/key/key.route");
 const fs = require("fs");
 var cors = require("cors");
 const bodyParser = require("body-parser");
 const connection = require("./src/config/database");
+const { checkToken } = require("./src/utils/utils");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: "*" }));
@@ -20,16 +22,17 @@ const options = {
 const server = https.createServer(options, app);
 
 app.use("/api/v1/user", userModel);
-
-(async () => {
+app.use("/api/v1/pki", checkToken, keyModal);
+async function main() {
   try {
     await connection();
     server.listen(process.env.LISTEN_PORT, () => {
-      console.log("OK");
+      console.log("Server running port:" + process.env.LISTEN_PORT);
     });
   } catch (error) {
     console.log(">>>> Error Connect to DB:", error);
     console.log("Server Error, please contact TServices");
     process.exit();
   }
-})();
+}
+main();

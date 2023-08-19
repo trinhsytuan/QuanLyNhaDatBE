@@ -1,11 +1,12 @@
 const { Gateway, Wallets } = require("fabric-network");
 const fs = require("fs");
 const path = require("path");
+const FabricCAServices = require("fabric-ca-client");
 const { location_blockchain } = require("../constant/constant.js");
 async function getWalletSystemByDefault() {
   const ccpPath = path.resolve(location_blockchain.WALLET_SERVER);
   let ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
-  const walletPath = path.join(process.cwd(), "wallet");
+  const walletPath = path.join(location_blockchain.CERT_SERVER);
   const wallet = await Wallets.newFileSystemWallet(walletPath);
   const identity = await wallet.get("appUser");
   if (!identity) {
@@ -36,7 +37,7 @@ async function enrollByID(userID) {
   const ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
   const caURL = ccp.certificateAuthorities["ca.org1.example.com"].url;
   const ca = new FabricCAServices(caURL);
-  const walletPath = path.join(process.cwd(), "wallet");
+  const walletPath = path.join(location_blockchain.CERT_SERVER);
   const wallet = await Wallets.newFileSystemWallet(walletPath);
   const adminIdentity = await wallet.get("admin");
   if (!adminIdentity) {
@@ -72,7 +73,7 @@ async function revokeIdentity(userID) {
   const ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
   const caURL = ccp.certificateAuthorities["ca.org1.example.com"].url;
   const ca = new FabricCAServices(caURL);
-  const walletPath = path.join(process.cwd(), "wallet");
+  const walletPath = path.join(location_blockchain.CERT_SERVER);
   const wallet = await Wallets.newFileSystemWallet(walletPath);
   const adminIdentity = await wallet.get("admin");
   if (!adminIdentity) {
@@ -83,6 +84,7 @@ async function revokeIdentity(userID) {
   await ca.revoke(
     {
       enrollmentID: userID,
+      reason: "Some reason for revocation",
     },
     adminUser
   );
