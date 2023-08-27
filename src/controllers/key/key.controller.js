@@ -67,8 +67,22 @@ const getMyKey = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+const updateTitleKey = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const { id } = req.params;
+    console.log(id, title);
+    const keyInfo = await pkiModel.updateOne({ _id: id }, { $set: { title } });
+    return res
+      .status(200)
+      .json({ suceess: true, message: "Cập nhật title thành công" });
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.toString() });
+  }
+};
 module.exports = {
   createNewKey,
   revokeKey,
   getMyKey,
+  updateTitleKey,
 };

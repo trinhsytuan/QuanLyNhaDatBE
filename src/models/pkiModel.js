@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 
 const pkeyModel = new mongoose.Schema(
   {
+    title: { type: String },
     user: [
       { ref: "user", type: mongoose.Schema.Types.ObjectId, required: true },
     ],

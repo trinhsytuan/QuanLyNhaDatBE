@@ -14,7 +14,7 @@ const recordNewUpdate = { new: true }; // Trả về tài liệu mới sau khi c
 const location_blockchain = {
   WALLET_SERVER:
     "/root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json",
-  CERT_SERVER: "/root/apiServer/src/blockchain/wallet",
+  CERT_SERVER: "/root/apiWeb/src/blockchain/wallet",
 };
 module.exports = {
   ROLE_SYSTEM,
