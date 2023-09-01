@@ -8,7 +8,7 @@ const {
 } = require("./key.controller");
 const router = express.Router();
 router.post("/createNew", createNewKey);
-router.put("/revoke/:id", revokeKey);
+router.delete("/revoke", revokeKey);
 router.get("/getMyKey", getMyKey);
-router.put("/updateTitle/:id", updateTitleKey);
+router.put("/updateTitle", updateTitleKey);
 module.exports = router;

@@ -52,7 +52,11 @@ function computeMD5Hash(input) {
   const hash = crypto.createHash("md5").update(input).digest("hex");
   return hash;
 }
-
+function checkMongoUpdate(mongo, message = "Cập nhật thông tin thành công") {
+  if (mongo.matchedCount > 0) {
+    return message;
+  } else throw new Error(mongo);
+}
 module.exports = {
   makeid,
   hashPassword,
@@ -60,4 +64,5 @@ module.exports = {
   checkToken,
   queryUserFromDB,
   computeMD5Hash,
+  checkMongoUpdate,
 };

@@ -3,6 +3,7 @@ const {
   queryUserFromDB,
   comparePasswords,
   makeid,
+  checkMongoUpdate,
 } = require("../../utils/utils");
 const { pkiModel } = require("../../models/pkiModel");
 const { userDB } = require("../../models/userModel");
@@ -42,17 +43,11 @@ const createNewKey = async (req, res) => {
 };
 const revokeKey = async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await pkiModel.deleteOne({ _id: id });
-    const blockchainRevoke = await revokeIdentity(req.decodeToken._id);
-    if (response.deletedCount == 1) {
-      res.status(200).json({ success: true, message: "Thu hồi thành công" });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: "Thu hồi không thành công, không tồn tại định danh",
-      });
-    }
+    const response = await pkiModel.findOneAndDelete({
+      user: req.decodeToken._id,
+    });
+    const blockchainRevoke = await revokeIdentity(response.idSignature);
+    res.status(200).json({ success: true, message: "Thu hồi thành công" });
   } catch (e) {
     res.status(400).json({ success: false, message: JSON.stringify(e) });
   }
@@ -70,12 +65,14 @@ const getMyKey = async (req, res) => {
 const updateTitleKey = async (req, res) => {
   try {
     const { title } = req.body;
-    const { id } = req.params;
-    console.log(id, title);
-    const keyInfo = await pkiModel.updateOne({ _id: id }, { $set: { title } });
-    return res
-      .status(200)
-      .json({ suceess: true, message: "Cập nhật title thành công" });
+    const keyInfo = await pkiModel.updateOne(
+      { user: req.decodeToken._id },
+      { $set: { title } }
+    );
+    return res.status(200).json({
+      success: true,
+      message: checkMongoUpdate(keyInfo, "Cập nhật tiêu đề thành công"),
+    });
   } catch (e) {
     res.status(400).json({ success: false, message: e.toString() });
   }
