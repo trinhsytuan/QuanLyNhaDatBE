@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { userDB } = require("../models/userModel");
 const randomstring = require("randomstring");
 const crypto = require("crypto");
+const { ROLE_SYSTEM } = require("../constant/constant");
 
 function makeid(length) {
   return randomstring.generate(length);
@@ -40,6 +41,27 @@ async function checkToken(req, res, next) {
     });
   }
 }
+function checkSystem(req, res, next) {
+  if (req.decodeToken.type == ROLE_SYSTEM.SYSTEM) next();
+  else
+    return res.status(401).send({
+      message: "You are not authozied to perform this action",
+    });
+}
+function checkDepartment(req, res, next) {
+  if (req.decodeToken.type == ROLE_SYSTEM.DEPARTMENT) next();
+  else
+    return res.status(401).send({
+      message: "You are not authozied to perform this action",
+    });
+}
+function checkReceiver(req, res, next) {
+  if (req.decodeToken.type == ROLE_SYSTEM.RECEIVER) next();
+  else
+    return res.status(401).send({
+      message: "You are not authozied to perform this action",
+    });
+}
 function queryUserFromDB(idUser) {
   try {
     return userDB.findOne({ _id: idUser });
@@ -55,14 +77,29 @@ function computeMD5Hash(input) {
 function checkMongoUpdate(mongo, message = "Cập nhật thông tin thành công") {
   if (mongo.matchedCount > 0) {
     return message;
-  } else throw new Error(mongo);
+  } else throw new Error("Lỗi khi cập nhật thông tin");
+}
+function checkMongoDelete(mongo, message = "Xoá bản ghi thành công") {
+  if (mongo.deletedCount === 1) {
+    return message;
+  } else {
+    throw new Error("Không tồn tại bản ghi");
+  }
+}
+function searchLike(params) {
+  return params ? new RegExp(params, "i") : null;
 }
 module.exports = {
   makeid,
   hashPassword,
+  checkMongoDelete,
+  checkSystem,
   comparePasswords,
   checkToken,
+  searchLike,
   queryUserFromDB,
   computeMD5Hash,
   checkMongoUpdate,
+  checkReceiver,
+  checkDepartment,
 };
