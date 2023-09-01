@@ -15,18 +15,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: "*" }));
 app.use("/api/images", express.static(path.join(__dirname, "uploads")));
 
-const options = {
-  key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.cert"),
-};
-const server = https.createServer(options, app);
+// const options = {
+//   key: fs.readFileSync("server.key"),
+//   cert: fs.readFileSync("server.cert"),
+// };
+// const server = https.createServer(options, app);
 
 app.use("/api/v1/user", userModel);
 app.use("/api/v1/pki", checkToken, keyModal);
 async function main() {
   try {
     await connection();
-    server.listen(process.env.LISTEN_PORT, () => {
+    app.listen(process.env.LISTEN_PORT, () => {
       console.log("Server running port:" + process.env.LISTEN_PORT);
     });
   } catch (error) {
