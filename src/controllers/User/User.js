@@ -10,6 +10,8 @@ const {
   comparePasswords,
   checkToken,
   queryUserFromDB,
+  checkSystem,
+  checkMongoDelete,
 } = require("../../utils/utils");
 const { registerRegisty } = require("../../emailServices/sendEmail");
 const { imageUpload } = require("../../utils/uploadImage");
@@ -20,7 +22,7 @@ const {
 } = require("../../constant/constant.js");
 const userLogin = async (req, res) => {
   const { username, password } = req.body;
-  const infoDataUser = await userDB.findOne({ username });
+  const infoDataUser = await userDB.findOne({ username }).populate("org");
   if (!infoDataUser) {
     return res.status(401).json(WRONG_PASSWORD);
   }
@@ -38,7 +40,7 @@ const userLogin = async (req, res) => {
 
 const userRegister = async (req, res) => {
   try {
-    const { username, email, phone, name, org, type } = req.body;
+    const { username, email, phone, name, org } = req.body;
     const randomPassword = makeid(10);
     const newPassword = await hashPassword(randomPassword);
     const UserCreate = await userDB.create({
@@ -47,7 +49,6 @@ const userRegister = async (req, res) => {
       phone,
       name,
       org,
-      type,
       password: newPassword,
     });
     registerRegisty(email, username, randomPassword);
@@ -68,6 +69,43 @@ const userRegister = async (req, res) => {
       console.log(error);
       res.status(400).json({ message: error });
     }
+  }
+};
+const updateUser = async (req, res) => {
+  try {
+    const { username, email, phone, name, org } = req.body;
+    const { id } = req.params;
+    const userUpdate = await userDB.findOneAndUpdate(
+      { _id: id },
+      { username, email, phone, name, org },
+      recordNewUpdate
+    );
+    return res.status(200).json(userUpdate);
+  } catch (error) {
+    if (error.code === 11000) {
+      const duplicateKeyError = error.keyPattern;
+      if (duplicateKeyError.username === 1) {
+        return res.status(400).json({ message: "Username đã tồn tại" });
+      }
+      if (duplicateKeyError.email === 1) {
+        return res.status(400).json({ message: "Email đã tồn tại" });
+      }
+      if (duplicateKeyError.phone === 1) {
+        return res.status(400).json({ message: "SĐT đã tồn tại" });
+      }
+    } else {
+      console.log(error);
+      res.status(400).json({ message: error });
+    }
+  }
+};
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const resDelete = await userDB.deleteOne({ _id: id });
+    res.status(200).json({ message: checkMongoDelete(resDelete) });
+  } catch (e) {
+    res.status(400).json({ message: e.toString() });
   }
 };
 const myInfo = async (req, res) => {
@@ -118,6 +156,7 @@ const changeNewPassword = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+
 router.post("/login", userLogin);
 router.post("/register", userRegister);
 router.get("/myInfo", checkToken, myInfo);
@@ -128,4 +167,6 @@ router.put(
   updateMyInfo
 );
 router.put("/changePassword", checkToken, changeNewPassword);
+router.put("/updateUser/:id", checkToken, checkSystem, updateUser);
+router.delete("/deleteUser/:id", checkToken, checkSystem, deleteUser);
 module.exports = router;

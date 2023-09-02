@@ -42,21 +42,21 @@ async function checkToken(req, res, next) {
   }
 }
 function checkSystem(req, res, next) {
-  if (req.decodeToken.type == ROLE_SYSTEM.SYSTEM) next();
+  if (req.decodeToken.org.type == ROLE_SYSTEM.SYSTEM) next();
   else
     return res.status(401).send({
       message: "You are not authozied to perform this action",
     });
 }
 function checkDepartment(req, res, next) {
-  if (req.decodeToken.type == ROLE_SYSTEM.DEPARTMENT) next();
+  if (req.decodeToken.org.type == ROLE_SYSTEM.DEPARTMENT) next();
   else
     return res.status(401).send({
       message: "You are not authozied to perform this action",
     });
 }
 function checkReceiver(req, res, next) {
-  if (req.decodeToken.type == ROLE_SYSTEM.RECEIVER) next();
+  if (req.decodeToken.org.type == ROLE_SYSTEM.RECEIVER) next();
   else
     return res.status(401).send({
       message: "You are not authozied to perform this action",
@@ -64,7 +64,7 @@ function checkReceiver(req, res, next) {
 }
 function queryUserFromDB(idUser) {
   try {
-    return userDB.findOne({ _id: idUser });
+    return userDB.findOne({ _id: idUser }).populate("org");
   } catch (e) {
     throw new Error(e);
   }

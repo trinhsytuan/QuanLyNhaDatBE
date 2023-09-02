@@ -16,8 +16,21 @@ async function createOrg(req, res) {
       type,
     });
     return res.status(200).json(response);
-  } catch (e) {
-    return res.status(400).json({ success: false, message: JSON.stringify(e) });
+  } catch (error) {
+    if (error.code === 11000) {
+      const duplicateKeyError = error.keyPattern;
+      if (duplicateKeyError.name === 1) {
+        return res.status(400).json({ message: "Tên đã tồn tại" });
+      }
+      if (duplicateKeyError.email === 1) {
+        return res.status(400).json({ message: "Email đã tồn tại" });
+      }
+      if (duplicateKeyError.phone === 1) {
+        return res.status(400).json({ message: "SĐT đã tồn tại" });
+      }
+    } else {
+      res.status(400).json({ message: error.toString() });
+    }
   }
 }
 async function editOrg(req, res) {
@@ -57,9 +70,11 @@ async function getAllOrgPagination(req, res) {
     if (type) search.type = type;
     const page = req.query.page || 1;
     const limit = req.query.limit || 10;
-    orgModel.paginate(search, { page, limit }, (err, result) => {
-      if (result) res.status(200).json(result);
-    });
+    const pagination = limit == 0 ? false : true;
+    const result = await orgModel.paginate({}, { page, limit, pagination });
+    if (result) {
+      return res.status(200).json(result);
+    }
   } catch (error) {
     return res.status(400).json({ message: error.toString() });
   }

@@ -7,8 +7,7 @@ const userChema = new mongoose.Schema(
     phone: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    org: { type: String, required: true },
-    type: { type: String, required: true },
+    org: { ref: "org", type: mongoose.Schema.Types.ObjectId, required: true },
     avatar: { type: String },
   },
   { timestamps: true }
