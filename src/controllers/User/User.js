@@ -130,11 +130,9 @@ const updateMyInfo = async (req, res) => {
       phone: infoNew.phone,
     };
     if (req?.file?.filename) dataUpdate.avatar = req.file.filename;
-    const updatedUser = await userDB.findOneAndUpdate(
-      { _id: userID },
-      { $set: dataUpdate },
-      recordNewUpdate
-    );
+    const updatedUser = await userDB
+      .findOneAndUpdate({ _id: userID }, { $set: dataUpdate }, recordNewUpdate)
+      .populate("org");
     res.status(200).json(updatedUser);
   } catch (e) {
     return res.status(400).json({ success: false, message: e.toString() });
