@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-
+const mongoosePaginate = require("mongoose-paginate-v2");
 const userChema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -12,5 +12,6 @@ const userChema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+userChema.plugin(mongoosePaginate);
 const userDB = mongoose.model("user", userChema);
 module.exports = { userDB };

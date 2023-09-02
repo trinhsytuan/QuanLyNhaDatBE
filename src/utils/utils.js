@@ -87,7 +87,14 @@ function checkMongoDelete(mongo, message = "Xoá bản ghi thành công") {
   }
 }
 function searchLike(params) {
-  return params ? new RegExp(params, "i") : null;
+  if (params?.like) return new RegExp(params.like, "i");
+  else if (params) return params;
+  else return null;
+}
+function checkMessageDuplicateMongo(error) {
+  const message = error.keyPattern;
+  const key = Object.keys(message);
+  if (key && key.length > 0) return key[0];
 }
 module.exports = {
   makeid,
@@ -101,5 +108,6 @@ module.exports = {
   computeMD5Hash,
   checkMongoUpdate,
   checkReceiver,
+  checkMessageDuplicateMongo,
   checkDepartment,
 };

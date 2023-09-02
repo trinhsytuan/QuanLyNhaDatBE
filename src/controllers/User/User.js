@@ -12,6 +12,8 @@ const {
   queryUserFromDB,
   checkSystem,
   checkMongoDelete,
+  searchLike,
+  checkMessageDuplicateMongo,
 } = require("../../utils/utils");
 const { registerRegisty } = require("../../emailServices/sendEmail");
 const { imageUpload } = require("../../utils/uploadImage");
@@ -83,19 +85,25 @@ const updateUser = async (req, res) => {
     return res.status(200).json(userUpdate);
   } catch (error) {
     if (error.code === 11000) {
-      const duplicateKeyError = error.keyPattern;
-      if (duplicateKeyError.username === 1) {
-        return res.status(400).json({ message: "Username đã tồn tại" });
+      const errorMessage = await checkMessageDuplicateMongo(error);
+      if (errorMessage == "phone") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Số điện thoại đã tồn tại" });
       }
-      if (duplicateKeyError.email === 1) {
-        return res.status(400).json({ message: "Email đã tồn tại" });
+      if (errorMessage == "email") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email đã tồn tại" });
       }
-      if (duplicateKeyError.phone === 1) {
-        return res.status(400).json({ message: "SĐT đã tồn tại" });
+      if (errorMessage == "username") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Username đã tồn tại" });
       }
     } else {
       console.log(error);
-      res.status(400).json({ message: error });
+      return res.status(400).json({ message: error });
     }
   }
 };
@@ -156,6 +164,28 @@ const changeNewPassword = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+const getAllUserPagination = async (req, res) => {
+  try {
+    const { name, username, phone, org } = req.query;
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const pagination = page == 0 ? false : true;
+    let search = {};
+    if (name) search.name = searchLike(req.query.name);
+    if (username) search.username = searchLike(req.query.username);
+    if (phone) search.phone = searchLike(req.query.phone);
+    if (org) search.org = org;
+    const resSearch = await userDB.paginate(search, {
+      page,
+      limit,
+      populate: "org",
+      pagination,
+    });
+    return res.status(200).json(resSearch);
+  } catch (e) {
+    return res.status(400).json({ message: e.toString() });
+  }
+};
 
 router.post("/login", userLogin);
 router.post("/register", userRegister);
@@ -169,4 +199,5 @@ router.put(
 router.put("/changePassword", checkToken, changeNewPassword);
 router.put("/updateUser/:id", checkToken, checkSystem, updateUser);
 router.delete("/deleteUser/:id", checkToken, checkSystem, deleteUser);
+router.get("/getUserPagination", checkToken, getAllUserPagination);
 module.exports = router;

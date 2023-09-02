@@ -3,6 +3,7 @@ const {
   checkMongoUpdate,
   checkMongoDelete,
   searchLike,
+  checkMessageDuplicateMongo,
 } = require("../../utils/utils");
 
 async function createOrg(req, res) {
@@ -45,6 +46,24 @@ async function editOrg(req, res) {
       .status(200)
       .json({ success: true, message: checkMongoUpdate(response) });
   } catch (error) {
+    if (error.code == 11000) {
+      const messageError = checkMessageDuplicateMongo(error);
+      if (messageError == "name") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Tên đã tồn tại" });
+      }
+      if (messageError == "email") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email đã tồn tại" });
+      }
+      if (messageError == "phone") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Số điện thoại đã tồn tại" });
+      }
+    }
     return res.status(400).json({ message: error.toString() });
   }
 }
