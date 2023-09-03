@@ -90,7 +90,7 @@ async function getAllOrgPagination(req, res) {
     const page = req.query.page || 1;
     const limit = req.query.limit || 10;
     const pagination = limit == 0 ? false : true;
-    const result = await orgModel.paginate({}, { page, limit, pagination });
+    const result = await orgModel.paginate(search, { page, limit, pagination });
     if (result) {
       return res.status(200).json(result);
     }
