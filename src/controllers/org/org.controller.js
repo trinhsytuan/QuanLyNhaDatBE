@@ -83,8 +83,7 @@ async function getAllOrgPagination(req, res) {
     const { name, type } = req.query;
     const search = {};
     if (name) {
-      if (name.like) search.name = searchLike(name.like);
-      else search.name = name;
+      search.name = searchLike(name);
     }
     if (type) search.type = type;
     const page = req.query.page || 1;
