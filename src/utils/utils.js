@@ -99,11 +99,7 @@ function checkMessageDuplicateMongo(error) {
 function checkMessageDuplicateMongoAutoRender(error) {
   const message = error.keyPattern;
   const key = Object.keys(message);
-  if (key && key.length > 0) {
-    for (i = 0; i < key.length; i++) {
-      return key[i].toString() + " đã tồn tại";
-    }
-  }
+  if (key && key.length > 0) return key[0] + " đã tồn tại";
 }
 module.exports = {
   makeid,
