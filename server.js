@@ -6,6 +6,7 @@ const app = express();
 const userModel = require("./src/controllers/User/User");
 const keyModal = require("./src/controllers/key/key.route");
 const orgModal = require("./src/controllers/org/org.route");
+const newCertificateModel = require("./src/controllers/newCertificate/newCertificate.route");
 const fs = require("fs");
 var cors = require("cors");
 const bodyParser = require("body-parser");
@@ -15,16 +16,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: "*" }));
 app.use("/api/images", express.static(path.join(__dirname, "uploads")));
-
-// const options = {
-//   key: fs.readFileSync("server.key"),
-//   cert: fs.readFileSync("server.cert"),
-// };
-// const server = https.createServer(options, app);
-
 app.use("/api/v1/user", userModel);
 app.use("/api/v1/pki", checkToken, keyModal);
 app.use("/api/v1/org", checkToken, orgModal);
+app.use("/api/v1/newcertificate", checkToken, newCertificateModel);
 async function main() {
   try {
     await connection();
