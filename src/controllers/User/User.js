@@ -42,7 +42,7 @@ const userLogin = async (req, res) => {
 
 const userRegister = async (req, res) => {
   try {
-    const { username, email, phone, name, org } = req.body;
+    const { username, email, phone, name, org, org_top } = req.body;
     const randomPassword = makeid(10);
     const newPassword = await hashPassword(randomPassword);
     const UserCreate = await userDB.create({
@@ -51,6 +51,7 @@ const userRegister = async (req, res) => {
       phone,
       name,
       org,
+      orgTop: org_top,
       password: newPassword,
     });
     registerRegisty(email, username, randomPassword);

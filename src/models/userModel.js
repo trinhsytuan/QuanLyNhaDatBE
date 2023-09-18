@@ -9,6 +9,10 @@ const userChema = new mongoose.Schema(
     password: { type: String, required: true },
     org: { ref: "org", type: mongoose.Schema.Types.ObjectId, required: true },
     avatar: { type: String },
+    orgTop: {
+      ref: "org",
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
   { timestamps: true }
 );
