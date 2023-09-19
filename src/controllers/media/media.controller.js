@@ -1,8 +1,5 @@
 const { mediaModel } = require("../../models/mediaModel");
-const {
-  checkMessageDuplicateMongo,
-  checkMongoDelete,
-} = require("../../utils/utils");
+const { checkMongoDelete } = require("../../utils/utils");
 
 const uploadNewMedia = async (req, res) => {
   try {
