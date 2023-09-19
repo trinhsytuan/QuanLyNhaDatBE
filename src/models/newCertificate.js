@@ -27,8 +27,7 @@ const newCertificateSchema = new mongoose.Schema(
     sotang: { type: Number },
     thoihansohuu: { type: Date },
     userRequest: { type: String },
-    orgRequest: { type: String },
-    orgResponse: {
+    orgRequest: {
       ref: "org",
       type: mongoose.Schema.Types.ObjectId,
     },

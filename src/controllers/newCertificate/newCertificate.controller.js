@@ -52,22 +52,9 @@ const sendCertificateToOrg = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
-const responseCertificateToOrg = async (req, res) => {
-  try {
-    const { status, descriptionReject, _id } = req.body;
-    const responseDB = await newCertificateModel.findOneAndUpdate(
-      { $id: _id },
-      { status, descriptionReject },
-      recordNewUpdate
-    );
-    res.status(200).json(responseDB);
-  } catch (e) {
-    res.status(400).json({ success: false, message: e.toString() });
-  }
-};
 module.exports = {
   createNewCeritificate,
   editCertificate,
   removeCertificate,
-  responseCertificateToOrg,
+  sendCertificateToOrg,
 };
