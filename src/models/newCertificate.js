@@ -16,7 +16,7 @@ const newCertificateSchema = new mongoose.Schema(
     Sudungrieng: { type: Number, required: true },
     Mucdichsd: { type: String, required: true },
     Tuthoidiem: { type: Date, required: true },
-    Thoihandenghi: { type: Number, required: true },
+    Thoihandenghi: { type: Date, required: true },
     Nguongoc: { type: String, required: true },
     Loainhao: { type: String },
     Dientichxaydung: { type: Number },
