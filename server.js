@@ -12,6 +12,7 @@ var cors = require("cors");
 const bodyParser = require("body-parser");
 const connection = require("./src/config/database");
 const { checkToken } = require("./src/utils/utils");
+const mediaRouter = require("./src/controllers/media/media.route");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: "*" }));
@@ -20,6 +21,8 @@ app.use("/api/v1/user", userModel);
 app.use("/api/v1/pki", checkToken, keyModal);
 app.use("/api/v1/org", checkToken, orgModal);
 app.use("/api/v1/newcertificate", checkToken, newCertificateModel);
+app.use("/api/v1/media", checkToken, mediaRouter);
+
 async function main() {
   try {
     await connection();
