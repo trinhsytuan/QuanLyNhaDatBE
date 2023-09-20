@@ -45,21 +45,21 @@ function checkSystem(req, res, next) {
   if (req.decodeToken.org.type == ROLE_SYSTEM.SYSTEM) next();
   else
     return res.status(401).send({
-      message: "You are not authozied to perform this action",
+      message: "You are not authorized to perform this action",
     });
 }
 function checkDepartment(req, res, next) {
   if (req.decodeToken.org.type == ROLE_SYSTEM.DEPARTMENT) next();
   else
     return res.status(401).send({
-      message: "You are not authozied to perform this action",
+      message: "You are not authorized to perform this action",
     });
 }
 function checkReceiver(req, res, next) {
   if (req.decodeToken.org.type == ROLE_SYSTEM.RECEIVER) next();
   else
     return res.status(401).send({
-      message: "You are not authozied to perform this action",
+      message: "You are not authorized to perform this action",
     });
 }
 function queryUserFromDB(idUser) {
