@@ -1,9 +1,13 @@
-const { recordNewUpdate } = require("../../constant/constant");
+const {
+  recordNewUpdate,
+  TYPE_IMAGE_CAP_MOI,
+} = require("../../constant/constant");
 const { newCertificateModel } = require("../../models/newCertificate");
 const {
   checkMessageDuplicateMongoAutoRender,
   checkMongoDelete,
 } = require("../../utils/utils");
+const { getMediaInternal } = require("../media/media.controller");
 
 const createNewCeritificate = async (req, res) => {
   try {
@@ -52,9 +56,39 @@ const sendCertificateToOrg = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+const getCetificate = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const promises = [
+      getMediaInternal(id, TYPE_IMAGE_CAP_MOI.ANH_KHU_DAT),
+      getMediaInternal(id, TYPE_IMAGE_CAP_MOI.CHUNG_TU_NGHIA_VU_TAI_CHINH),
+      getMediaInternal(id, TYPE_IMAGE_CAP_MOI.DON_DANG_KY),
+      getMediaInternal(id, TYPE_IMAGE_CAP_MOI.HOP_DONG),
+      getMediaInternal(id, TYPE_IMAGE_CAP_MOI.OTHER),
+    ];
+
+    const [anhkhudat, taichinh, dondangky, hopdong, other] = await Promise.all(
+      promises
+    );
+
+    const certificate = await newCertificateModel.findOne({ _id: id });
+    const response = {
+      anhkhudat,
+      taichinh,
+      dondangky,
+      hopdong,
+      other,
+      ...certificate._doc,
+    };
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.toString() });
+  }
+};
 module.exports = {
   createNewCeritificate,
   editCertificate,
   removeCertificate,
   sendCertificateToOrg,
+  getCetificate,
 };

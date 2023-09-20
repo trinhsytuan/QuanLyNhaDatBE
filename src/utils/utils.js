@@ -101,6 +101,7 @@ function checkMessageDuplicateMongoAutoRender(error) {
   const key = Object.keys(message);
   if (key && key.length > 0) return key[0] + " đã tồn tại";
 }
+
 module.exports = {
   makeid,
   hashPassword,

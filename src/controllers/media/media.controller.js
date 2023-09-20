@@ -1,3 +1,4 @@
+const { sort_time } = require("../../constant/constant");
 const { mediaModel } = require("../../models/mediaModel");
 const { checkMongoDelete } = require("../../utils/utils");
 
@@ -36,7 +37,7 @@ const deleteMedia = async (req, res) => {
 const getMediaByIdForm = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await mediaModel.find({ idForm: id });
+    const response = await mediaModel.sort(sort_time).find({ idForm: id });
     return res.status(200).json(response);
   } catch (e) {
     return res.status(400).json({
@@ -45,8 +46,13 @@ const getMediaByIdForm = async (req, res) => {
     });
   }
 };
+const getMediaInternal = async (id, type) => {
+  const response = await mediaModel.find({ idForm: id, type }).sort(sort_time);
+  return response;
+};
 module.exports = {
   uploadNewMedia,
   getMediaByIdForm,
   deleteMedia,
+  getMediaInternal,
 };
