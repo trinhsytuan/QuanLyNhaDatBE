@@ -6,12 +6,16 @@ const { newCertificateModel } = require("../../models/newCertificate");
 const {
   checkMessageDuplicateMongoAutoRender,
   checkMongoDelete,
+  searchLike,
 } = require("../../utils/utils");
 const { getMediaInternal } = require("../media/media.controller");
 
 const createNewCeritificate = async (req, res) => {
   try {
-    const response = await newCertificateModel.create(req.body);
+    const response = await newCertificateModel.create({
+      ...req.body,
+      orgRequest: req.decodeToken.org?._id,
+    });
     return res.status(200).json(response);
   } catch (e) {
     if (e.error == 11000) {
@@ -43,7 +47,8 @@ const editCertificate = async (req, res) => {
 };
 const removeCertificate = async (req, res) => {
   try {
-    const remove = await newCertificateModel.deleteOne({ $id: _id });
+    const { id } = req.params;
+    const remove = await newCertificateModel.deleteOne({ _id: id });
     res.status(200).json({ success: true, message: checkMongoDelete(remove) });
   } catch (e) {
     res.status(400).json({ success: false, message: e.toString() });
@@ -85,10 +90,34 @@ const getCetificate = async (req, res) => {
     return res.status(500).json({ success: false, message: error.toString() });
   }
 };
+const getCertificateTable = async (req, res) => {
+  try {
+    const search = {};
+    let pagination = true;
+    const { page, limit, tennguoisudung, diachithuongtru, status } = req.query;
+    if (tennguoisudung) search.page = searchLike(search.tennguoisudung);
+    if (diachithuongtru) search.limit = searchLike(search.diachithuongtru);
+    search.orgRequest = req.decodeToken.org?._id;
+    if (status) search.status = status;
+    if (limit == 0) pagination = false;
+    const result = await newCertificateModel.paginate(search, {
+      page,
+      limit,
+      pagination,
+    });
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({
+      success: false,
+      message: e.toString(),
+    });
+  }
+};
 module.exports = {
   createNewCeritificate,
   editCertificate,
   removeCertificate,
   sendCertificateToOrg,
   getCetificate,
+  getCertificateTable,
 };
