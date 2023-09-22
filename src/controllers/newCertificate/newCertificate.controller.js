@@ -29,8 +29,9 @@ const createNewCeritificate = async (req, res) => {
 };
 const editCertificate = async (req, res) => {
   try {
+    const { id } = req.params;
     const reqEdit = await newCertificateModel.findOneAndUpdate(
-      { $id: _id },
+      { _id: id },
       { ...req.body },
       recordNewUpdate
     );
