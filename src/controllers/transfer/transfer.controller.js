@@ -1,15 +1,19 @@
-const { recordNewUpdate } = require("../../constant/constant");
-const { rewCertificateModel } = require("../../models/reCertificate");
+const {
+  recordNewUpdate,
+  TYPE_IMAGE_CAP_LAI,
+} = require("../../constant/constant");
+const { transferModel } = require("../../models/transfer");
 const {
   checkMongoUpdate,
   checkMongoDelete,
   searchLike,
   makeid,
 } = require("../../utils/utils");
+const { getMediaInternal } = require("../media/media.controller");
 
 const createReCertificate = async (req, res) => {
   try {
-    const response = await rewCertificateModel.create({
+    const response = await transferModel.create({
       ...req.body,
       magiayto: "CL" + makeid(8),
       orgRequest: req.decodeToken.org?._id,
@@ -26,7 +30,7 @@ const createReCertificate = async (req, res) => {
 const editReCertificate = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await rewCertificateModel.findOneAndUpdate(
+    const response = await transferModel.findOneAndUpdate(
       { _id: id },
       { ...req, body },
       recordNewUpdate
@@ -42,10 +46,28 @@ const editReCertificate = async (req, res) => {
 const removeReCertificate = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await rewCertificateModel.deleteOne({ _id: id });
+    const response = await transferModel.deleteOne({ _id: id });
     return res.status(200).json({
       success: true,
       message: checkMongoDelete(response),
+    });
+  } catch (e) {
+    return res.status(400).json({
+      success: false,
+      message: e.toString(),
+    });
+  }
+};
+const getChuyenNhuong = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await transferModel.findOne({ _id: id });
+    const promises = [getMediaInternal(id, TYPE_IMAGE_CAP_LAI.ANH_KHU_DAT)];
+
+    const [anhkhudat] = await Promise.all(promises);
+    return res.status(200).json({
+      anhkhudat,
+      ...response._doc,
     });
   } catch (e) {
     return res.status(400).json({
@@ -64,7 +86,7 @@ const getReCertificatePagination = async (req, res) => {
     if (status) search.status = status;
     if (ten) search.ten = searchLike(ten);
     if (magiayto) search.magiayto = magiayto;
-    const result = await rewCertificateModel.paginate(search, {
+    const result = await transferModel.paginate(search, {
       page,
       limit,
       pagination,
@@ -83,4 +105,5 @@ module.exports = {
   editReCertificate,
   removeReCertificate,
   getReCertificatePagination,
+  getChuyenNhuong,
 };

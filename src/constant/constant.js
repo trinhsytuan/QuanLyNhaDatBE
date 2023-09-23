@@ -24,6 +24,10 @@ const TYPE_IMAGE_CAP_MOI = {
   HOP_DONG: "hop-dong",
   OTHER: "other",
 };
+const TYPE_IMAGE_CAP_LAI = {
+  ANH_KHU_DAT: "anh-khu-dat",
+};
+
 module.exports = {
   ROLE_SYSTEM,
   WRONG_PASSWORD,
@@ -32,4 +36,5 @@ module.exports = {
   location_blockchain,
   TYPE_IMAGE_CAP_MOI,
   sort_time,
+  TYPE_IMAGE_CAP_LAI,
 };

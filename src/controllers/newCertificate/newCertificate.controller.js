@@ -119,6 +119,18 @@ const getCertificateTable = async (req, res) => {
     });
   }
 };
+const getOneCertificate = async (req, res) => {
+  try {
+    const { magiayto } = req.params;
+    const result = await newCertificateModel.findOne({ magiayto });
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({
+      sucees: false,
+      message: e.toString(),
+    });
+  }
+};
 module.exports = {
   createNewCeritificate,
   editCertificate,
@@ -126,4 +138,5 @@ module.exports = {
   sendCertificateToOrg,
   getCetificate,
   getCertificateTable,
+  getOneCertificate,
 };
