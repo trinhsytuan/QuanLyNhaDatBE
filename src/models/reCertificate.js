@@ -4,6 +4,7 @@ const reCertificateChema = new mongoose.Schema(
   {
     ten: { type: String, required: true },
     diachi: { type: String, required: true },
+    magiayto: { type: String },
     sovaoso: { type: String, required: true },
     sophathanh: { type: String, required: true },
     ngaycap: { type: Date, required: true },

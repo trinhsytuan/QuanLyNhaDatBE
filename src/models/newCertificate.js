@@ -3,6 +3,7 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const newCertificateSchema = new mongoose.Schema(
   {
     tennguoisudung: { type: String, required: true },
+    magiayto: { type: String },
     diachithuongtru: { type: String, required: true },
     dangkyquyensdd: { type: Boolean },
     capgcndoivoidat: { type: Boolean },

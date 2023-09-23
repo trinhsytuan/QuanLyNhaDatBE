@@ -7,6 +7,7 @@ const {
   checkMessageDuplicateMongoAutoRender,
   checkMongoDelete,
   searchLike,
+  makeid,
 } = require("../../utils/utils");
 const { getMediaInternal } = require("../media/media.controller");
 
@@ -15,6 +16,8 @@ const createNewCeritificate = async (req, res) => {
     const response = await newCertificateModel.create({
       ...req.body,
       orgRequest: req.decodeToken.org?._id,
+      userRequest: req.decodeToken._id,
+      magiayto: "GT" + makeid(8),
     });
     return res.status(200).json(response);
   } catch (e) {
@@ -95,12 +98,14 @@ const getCertificateTable = async (req, res) => {
   try {
     const search = {};
     let pagination = true;
-    const { page, limit, tennguoisudung, diachithuongtru, status } = req.query;
+    const { page, limit, tennguoisudung, diachithuongtru, status, magiayto } =
+      req.query;
     if (tennguoisudung) search.page = searchLike(search.tennguoisudung);
     if (diachithuongtru) search.limit = searchLike(search.diachithuongtru);
     search.orgRequest = req.decodeToken.org?._id;
     if (status) search.status = status;
     if (limit == 0) pagination = false;
+    if (magiayto) search.magiayto = magiayto;
     const result = await newCertificateModel.paginate(search, {
       page,
       limit,
