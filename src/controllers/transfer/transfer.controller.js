@@ -15,7 +15,6 @@ const createReCertificate = async (req, res) => {
   try {
     const response = await transferModel.create({
       ...req.body,
-      magiayto: "CL" + makeid(8),
       orgRequest: req.decodeToken.org?._id,
       userRequest: req.decodeToken._id,
     });
@@ -32,7 +31,7 @@ const editReCertificate = async (req, res) => {
     const { id } = req.params;
     const response = await transferModel.findOneAndUpdate(
       { _id: id },
-      { ...req, body },
+      { ...req.body },
       recordNewUpdate
     );
     return res.status(200).json(response);
@@ -78,14 +77,23 @@ const getChuyenNhuong = async (req, res) => {
 };
 const getReCertificatePagination = async (req, res) => {
   try {
-    const { page, limit, status, ten, magiayto } = req.params;
+    const {
+      page,
+      limit,
+      status,
+      tennguoisudung,
+      tennguoisudungnhan,
+      magiayto,
+    } = req.query;
     let pagination = null;
     if (limit == 0) pagination = false;
     else pagination = true;
     let search = {};
     if (status) search.status = status;
-    if (ten) search.ten = searchLike(ten);
-    if (magiayto) search.magiayto = magiayto;
+    if (tennguoisudung) search.tennguoisudung = searchLike(tennguoisudung);
+    if (tennguoisudungnhan)
+      search.tennguoisudung = searchLike(tennguoisudungnhan);
+    if (magiayto) search.magiayto = searchLike(magiayto);
     const result = await transferModel.paginate(search, {
       page,
       limit,
