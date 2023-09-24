@@ -32,6 +32,7 @@ const newCertificateSchema = new mongoose.Schema(
     ketcau: { type: String },
     sotang: { type: Number },
     thoihansohuu: { type: Date },
+    diachithuadat: { type: String, require: true },
     userRequest: { type: String },
     orgRequest: {
       ref: "org",
