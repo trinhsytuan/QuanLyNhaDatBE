@@ -94,6 +94,7 @@ const getReCertificatePagination = async (req, res) => {
     if (tennguoisudungnhan)
       search.tennguoisudung = searchLike(tennguoisudungnhan);
     if (magiayto) search.magiayto = searchLike(magiayto);
+    search.orgRequest = req.decodeToken.org?._id;
     const result = await transferModel.paginate(search, {
       page,
       limit,

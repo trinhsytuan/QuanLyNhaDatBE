@@ -14,6 +14,7 @@ const bodyParser = require("body-parser");
 const connection = require("./src/config/database");
 const { checkToken } = require("./src/utils/utils");
 const mediaRouter = require("./src/controllers/media/media.route");
+const reCertificate = require("./src/controllers/reCertificate/reCertificate.route");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: "*" }));
@@ -24,6 +25,7 @@ app.use("/api/v1/org", checkToken, orgModal);
 app.use("/api/v1/newcertificate", checkToken, newCertificateModel);
 app.use("/api/v1/media", checkToken, mediaRouter);
 app.use("/api/v1/transfer", checkToken, transferModel);
+app.use("/api/v1/reCertificate", checkToken, reCertificate);
 async function main() {
   try {
     await connection();
