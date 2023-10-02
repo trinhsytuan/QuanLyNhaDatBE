@@ -66,10 +66,10 @@ const getCertificateById = async (req, res) => {
 };
 const getAllPaginationReCertificate = async (req, res) => {
   try {
-    const { makhudat, tennguoisudung } = req.query;
+    const { magiayto, tennguoisudung } = req.query;
     const search = {};
-    if (makhudat) {
-      search.makhudat = makhudat;
+    if (magiayto) {
+      search.magiayto = magiayto;
     }
     if (tennguoisudung) search.tennguoisudung = searchLike(tennguoisudung);
     const page = req.query.page || 1;
