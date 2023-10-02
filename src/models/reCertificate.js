@@ -4,6 +4,7 @@ const reCertificateSchema = new mongoose.Schema(
   {
     magiayto: { type: String, require: true },
     lydocaplai: { type: String, require: true },
+    tennguoisudung: { type: String, require: true },
     userRequest: { type: String },
     orgRequest: {
       ref: "org",
