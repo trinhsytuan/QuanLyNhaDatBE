@@ -97,9 +97,14 @@ async function getAllOrgPagination(req, res) {
     return res.status(400).json({ message: error.toString() });
   }
 }
+const getOneOrg = async (id) => {
+  const response = await orgModel.findOne({ _id: id });
+  return response;
+};
 module.exports = {
   createOrg,
   editOrg,
   deleteOrg,
   getAllOrgPagination,
+  getOneOrg,
 };

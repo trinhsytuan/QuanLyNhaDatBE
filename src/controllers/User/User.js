@@ -76,11 +76,11 @@ const userRegister = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   try {
-    const { username, email, phone, name, org } = req.body;
+    const { username, email, phone, name, org, org_top } = req.body;
     const { id } = req.params;
     const userUpdate = await userDB.findOneAndUpdate(
       { _id: id },
-      { username, email, phone, name, org },
+      { username, email, phone, name, org, orgTop: org_top },
       recordNewUpdate
     );
     return res.status(200).json(userUpdate);

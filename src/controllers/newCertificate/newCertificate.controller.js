@@ -8,8 +8,10 @@ const {
   checkMongoDelete,
   searchLike,
   makeid,
+  checkMongoUpdate,
 } = require("../../utils/utils");
 const { getMediaInternal } = require("../media/media.controller");
+const { getOneOrg } = require("../org/org.controller");
 
 const createNewCeritificate = async (req, res) => {
   try {
@@ -60,7 +62,24 @@ const removeCertificate = async (req, res) => {
 };
 const sendCertificateToOrg = async (req, res) => {
   try {
-    const { orgResponse } = req.body;
+    const { id } = req.params;
+    if (!req?.decodeToken?.orgTop) {
+      return res.status(400).json({
+        message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
+        success: false,
+      });
+    }
+    const updatedResult = await newCertificateModel.updateOne(
+      { _id: id },
+      {
+        status: "sending",
+        orgResponse: req.decodeToken.orgTop,
+      }
+    );
+    return res.status(200).json({
+      success: true,
+      message: checkMongoUpdate(updatedResult, "Gửi duyệt thành công"),
+    });
   } catch (e) {
     res.status(400).json({ success: false, message: e.toString() });
   }
