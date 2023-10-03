@@ -1,6 +1,10 @@
 const { recordNewUpdate } = require("../../constant/constant");
 const { reCertificateModel } = require("../../models/reCertificate");
-const { checkMongoDelete, searchLike } = require("../../utils/utils");
+const {
+  checkMongoDelete,
+  searchLike,
+  checkMongoUpdate,
+} = require("../../utils/utils");
 
 const createNewReCertificate = async (req, res) => {
   try {
@@ -91,10 +95,35 @@ const getAllPaginationReCertificate = async (req, res) => {
     });
   }
 };
+const sendCertificateToOrgReCertificate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req?.decodeToken?.orgTop) {
+      return res.status(400).json({
+        message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
+        success: false,
+      });
+    }
+    const updatedResult = await reCertificateModel.updateOne(
+      { _id: id },
+      {
+        status: "sending",
+        orgResponse: req.decodeToken.orgTop,
+      }
+    );
+    return res.status(200).json({
+      success: true,
+      message: checkMongoUpdate(updatedResult, "Gửi duyệt thành công"),
+    });
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.toString() });
+  }
+};
 module.exports = {
   createNewReCertificate,
   getCertificateById,
   deleteReCertificate,
   editReCertificate,
   getAllPaginationReCertificate,
+  sendCertificateToOrgReCertificate,
 };

@@ -108,11 +108,35 @@ const getReCertificatePagination = async (req, res) => {
     });
   }
 };
-
+const sendTransferToOrg = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req?.decodeToken?.orgTop) {
+      return res.status(400).json({
+        message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
+        success: false,
+      });
+    }
+    const updatedResult = await transferModel.updateOne(
+      { _id: id },
+      {
+        status: "sending",
+        orgResponse: req.decodeToken.orgTop,
+      }
+    );
+    return res.status(200).json({
+      success: true,
+      message: checkMongoUpdate(updatedResult, "Gửi duyệt thành công"),
+    });
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.toString() });
+  }
+};
 module.exports = {
   createReCertificate,
   editReCertificate,
   removeReCertificate,
   getReCertificatePagination,
   getChuyenNhuong,
+  sendTransferToOrg,
 };
