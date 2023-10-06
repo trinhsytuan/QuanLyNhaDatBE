@@ -1,3 +1,7 @@
+const {
+  getWalletSystemByUser,
+  pushDataToBlockchain,
+} = require("../../blockchain/baseConfig");
 const { recordNewUpdate } = require("../../constant/constant");
 const { reCertificateModel } = require("../../models/reCertificate");
 const {
@@ -5,6 +9,7 @@ const {
   searchLike,
   checkMongoUpdate,
 } = require("../../utils/utils");
+const { getMyKeyInternal } = require("../key/key.controller");
 
 const createNewReCertificate = async (req, res) => {
   try {
@@ -98,17 +103,40 @@ const getAllPaginationReCertificate = async (req, res) => {
 const sendCertificateToOrgReCertificate = async (req, res) => {
   try {
     const { id } = req.params;
+    const { private_key } = req.body;
+    const myPK = await getMyKeyInternal(req?.decodeToken._id);
+    if (!myPK) {
+      return res.status(200).json({
+        message: "Tài khoản chưa có khoá",
+        success: false,
+      });
+    }
+    const constract = await getWalletSystemByUser(
+      myPK.idSignature,
+      myPK.publicKey,
+      private_key
+    );
     if (!req?.decodeToken?.orgTop) {
       return res.status(400).json({
         message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
         success: false,
       });
     }
+    const oldRecord = await reCertificateModel.findOne({ _id: id });
+    const responseBl = await pushDataToBlockchain(
+      constract,
+      oldRecord,
+      oldRecord._id
+    );
+
     const updatedResult = await reCertificateModel.updateOne(
       { _id: id },
       {
-        status: "sending",
-        orgResponse: req.decodeToken.orgTop,
+        $set: {
+          status: "sending",
+          orgResponse: req.decodeToken.orgTop,
+          txtId: JSON.parse(responseBl).txtId,
+        },
       }
     );
     return res.status(200).json({

@@ -77,10 +77,14 @@ const updateTitleKey = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
-
+const getMyKeyInternal = async (idUser) => {
+  const keyInfo = await pkiModel.findOne({ user: idUser }).populate("user");
+  return keyInfo;
+};
 module.exports = {
   createNewKey,
   revokeKey,
   getMyKey,
   updateTitleKey,
+  getMyKeyInternal,
 };

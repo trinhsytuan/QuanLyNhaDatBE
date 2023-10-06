@@ -1,4 +1,4 @@
-const { Gateway, Wallets } = require("fabric-network");
+const { Gateway, Wallets, X509Identity } = require("fabric-network");
 const fs = require("fs");
 const path = require("path");
 const FabricCAServices = require("fabric-ca-client");
@@ -22,9 +22,20 @@ async function getWalletSystemByDefault() {
   });
   return gateway;
 }
-async function getWalletSystemByUser(userID, wallet) {
+async function getWalletSystemByUser(userID, publicKey, privateKey) {
   const ccpPath = path.resolve(location_blockchain.WALLET_SERVER);
-  let ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
+  const ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
+  const wallet = await Wallets.newInMemoryWallet();
+  const identity = {
+    credentials: {
+      certificate: publicKey,
+      privateKey: privateKey,
+    },
+    mspId: "Org1MSP",
+    type: "X.509",
+    version: 1,
+  };
+  await wallet.put(userID, identity);
   const gateway = new Gateway();
   await gateway.connect(ccp, {
     wallet,
@@ -95,10 +106,21 @@ async function revokeIdentity(userID) {
     message: `Đã thu hồi chứng chỉ của người dùng ${userID}`,
   };
 }
-
+async function pushDataToBlockchain(gateway, data, magiayto) {
+  const network = await gateway.getNetwork("mychannel");
+  const contract = network.getContract("fabcar");
+  const response = await contract.submitTransaction(
+    "createCar",
+    JSON.stringify(data),
+    magiayto
+  );
+  await gateway.disconnect();
+  return response;
+}
 module.exports = {
   getWalletSystemByDefault,
   getWalletSystemByUser,
   enrollByID,
   revokeIdentity,
+  pushDataToBlockchain,
 };

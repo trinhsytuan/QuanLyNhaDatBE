@@ -33,6 +33,7 @@ const transferModelSchema = new mongoose.Schema(
       ref: "org",
       type: mongoose.Schema.Types.ObjectId,
     },
+    txtId: { type: String },
     status: { type: String, default: "pending" },
     descriptionReject: { type: String },
   },

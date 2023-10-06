@@ -1,4 +1,8 @@
 const {
+  getWalletSystemByUser,
+  pushDataToBlockchain,
+} = require("../../blockchain/baseConfig");
+const {
   recordNewUpdate,
   TYPE_IMAGE_CAP_MOI,
 } = require("../../constant/constant");
@@ -10,6 +14,7 @@ const {
   makeid,
   checkMongoUpdate,
 } = require("../../utils/utils");
+const { getMyKeyInternal } = require("../key/key.controller");
 const { getMediaInternal } = require("../media/media.controller");
 const { getOneOrg } = require("../org/org.controller");
 
@@ -63,25 +68,49 @@ const removeCertificate = async (req, res) => {
 const sendCertificateToOrg = async (req, res) => {
   try {
     const { id } = req.params;
+    const { private_key } = req.body;
+    const myPK = await getMyKeyInternal(req?.decodeToken._id);
+    if (!myPK) {
+      return res.status(200).json({
+        message: "Tài khoản chưa có khoá",
+        success: false,
+      });
+    }
+    const constract = await getWalletSystemByUser(
+      myPK.idSignature,
+      myPK.publicKey,
+      private_key
+    );
     if (!req?.decodeToken?.orgTop) {
       return res.status(400).json({
         message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
         success: false,
       });
     }
+    const dataNotUpdate = await newCertificateModel.findOne({
+      _id: id,
+    });
+    const responseBl = await pushDataToBlockchain(
+      constract,
+      dataNotUpdate,
+      dataNotUpdate._id
+    );
     const updatedResult = await newCertificateModel.updateOne(
       { _id: id },
       {
-        status: "sending",
-        orgResponse: req.decodeToken.orgTop,
+        $set: {
+          status: "sending",
+          orgResponse: req.decodeToken.orgTop,
+          txtId: JSON.parse(responseBl).txtId,
+        },
       }
     );
     return res.status(200).json({
       success: true,
-      message: checkMongoUpdate(updatedResult, "Gửi duyệt thành công"),
+      message: checkMongoUpdate(updatedResult, "Gửi thẩm định thành công"),
     });
   } catch (e) {
-    res.status(400).json({ success: false, message: e.toString() });
+    res.status(400).json({ success: false, message: "Sai khoá bí mật" });
   }
 };
 const getCetificate = async (req, res) => {
