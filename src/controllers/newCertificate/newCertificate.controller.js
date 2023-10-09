@@ -167,6 +167,32 @@ const getCertificateTable = async (req, res) => {
     });
   }
 };
+const getCertificateThamDinh = async (req, res) => {
+  try {
+    const search = {};
+    let pagination = true;
+    const { page, limit, tennguoisudung, diachithuongtru, status, magiayto } =
+      req.query;
+    if (tennguoisudung) search.page = searchLike(search.tennguoisudung);
+    if (diachithuongtru) search.limit = searchLike(search.diachithuongtru);
+    console.log(req.decodeToken.org?._id);
+    search.orgResponse = req.decodeToken.org?._id;
+    if (status) search.status = status;
+    if (limit == 0) pagination = false;
+    if (magiayto) search.magiayto = magiayto;
+    const result = await newCertificateModel.paginate(search, {
+      page,
+      limit,
+      pagination,
+    });
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({
+      success: false,
+      message: e.toString(),
+    });
+  }
+};
 const getOneCertificate = async (req, res) => {
   try {
     const { magiayto } = req.params;
@@ -187,4 +213,5 @@ module.exports = {
   getCetificate,
   getCertificateTable,
   getOneCertificate,
+  getCertificateThamDinh,
 };

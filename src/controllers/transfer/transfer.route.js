@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const { checkReceiver } = require("../../utils/utils");
+const { checkReceiver, checkDepartment } = require("../../utils/utils");
 const {
   createReCertificate,
   getChuyenNhuong,
@@ -8,6 +8,7 @@ const {
   removeReCertificate,
   getReCertificatePagination,
   sendTransferToOrg,
+  getReCertificatePaginationDepartment,
 } = require("./transfer.controller");
 const router = express.Router();
 
@@ -17,4 +18,5 @@ router.put("/editReCertificate/:id", checkReceiver, editReCertificate);
 router.delete("/deleteReCeritificate/:id", checkReceiver, removeReCertificate);
 router.get("/getTableChuyenNhuong", checkReceiver, getReCertificatePagination);
 router.put("/sendCertificateToOrg/:id", checkReceiver, sendTransferToOrg);
+router.get("/getTableChuyenNhuongDepartment", checkDepartment, getReCertificatePaginationDepartment);
 module.exports = router;

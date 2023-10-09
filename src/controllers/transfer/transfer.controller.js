@@ -113,6 +113,39 @@ const getReCertificatePagination = async (req, res) => {
     });
   }
 };
+const getReCertificatePaginationDepartment = async (req, res) => {
+  try {
+    const {
+      page,
+      limit,
+      status,
+      tennguoisudung,
+      tennguoisudungnhan,
+      magiayto,
+    } = req.query;
+    let pagination = null;
+    if (limit == 0) pagination = false;
+    else pagination = true;
+    let search = {};
+    if (status) search.status = status;
+    if (tennguoisudung) search.tennguoisudung = searchLike(tennguoisudung);
+    if (tennguoisudungnhan)
+      search.tennguoisudung = searchLike(tennguoisudungnhan);
+    if (magiayto) search.magiayto = searchLike(magiayto);
+    search.orgResponse = req.decodeToken.org?._id;
+    const result = await transferModel.paginate(search, {
+      page,
+      limit,
+      pagination,
+    });
+    res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({
+      success: false,
+      message: e.toString(),
+    });
+  }
+};
 const sendTransferToOrg = async (req, res) => {
   try {
     const { id } = req.params;
@@ -166,4 +199,5 @@ module.exports = {
   getReCertificatePagination,
   getChuyenNhuong,
   sendTransferToOrg,
+  getReCertificatePaginationDepartment,
 };
