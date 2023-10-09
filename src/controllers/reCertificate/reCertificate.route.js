@@ -16,6 +16,14 @@ router.get("/getById/:id", getCertificateById);
 router.get("/getPagination", getAllPaginationReCertificate);
 router.delete("/deleteById/:id", checkReceiver, deleteReCertificate);
 router.put("/edit/:id", checkReceiver, editReCertificate);
-router.put("/sendCertificateToOrg/:id", checkReceiver, sendCertificateToOrgReCertificate);
-router.get("/getPaginationDepartment", checkDepartment, getAllPaginationReCertificateDepartment)
+router.put(
+  "/sendCertificateToOrg/:id",
+  checkReceiver,
+  sendCertificateToOrgReCertificate
+);
+router.get(
+  "/getPaginationDepartment",
+  checkDepartment,
+  getAllPaginationReCertificateDepartment
+);
 module.exports = router;

@@ -1,12 +1,12 @@
 const { default: mongoose } = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const newCertificateSchema = new mongoose.Schema(
+const landModelSchema = new mongoose.Schema(
   {
     tennguoisudung: { type: String, required: true },
     magiayto: { type: String },
     cccd: { type: String, required: true },
-    noicap: { type: Boolean },
-    ngaycapcccd: { type: Boolean },
+    noicap: { type: String, require: true },
+    ngaycapcccd: { type: Date, require: true },
     nghenghiep: { type: Boolean },
     sothuadat: { type: Boolean },
     thuadatdangky: { type: String, required: true },
@@ -15,24 +15,20 @@ const newCertificateSchema = new mongoose.Schema(
     diachithuadat: { type: Number, required: true },
     sudungrieng: { type: Number, required: true },
     sudungchung: { type: Number, required: true },
-    mucdichsudung: { type: String, required: true },
+    mucdichsd: { type: String, required: true },
     thoihansudung: { type: Date, required: true },
-    nguongocsudung: { type: Date, required: true },
+    nguongoc: { type: String, required: true },
     loainhao: { type: String },
+    dientich: { type: String },
     nghenghiep: { type: String, require: true },
     dientichxaydung: { type: Number },
     sotang: { type: Number },
     ketcau: { type: Number },
-    diachikhudat: { type: Number },
     ngaycap: { type: String },
-    sophathanh: { type: Number },
     txtId: { type: String },
   },
   { timestamps: true }
 );
-newCertificateSchema.plugin(mongoosePaginate);
-const newCertificateModel = mongoose.model(
-  "newCertificate",
-  newCertificateSchema
-);
-module.exports = { newCertificateModel };
+landModelSchema.plugin(mongoosePaginate);
+const landModel = mongoose.model("land", landModelSchema);
+module.exports = { landModel };

@@ -6,6 +6,7 @@ const {
   recordNewUpdate,
   TYPE_IMAGE_CAP_MOI,
 } = require("../../constant/constant");
+const { landModel } = require("../../models/landModel");
 const { newCertificateModel } = require("../../models/newCertificate");
 const {
   checkMessageDuplicateMongoAutoRender,
@@ -24,7 +25,7 @@ const createNewCeritificate = async (req, res) => {
       ...req.body,
       orgRequest: req.decodeToken.org?._id,
       userRequest: req.decodeToken._id,
-      magiayto: "GT" + makeid(8),
+      magiayto: "KD" + makeid(8),
     });
     return res.status(200).json(response);
   } catch (e) {
@@ -204,6 +205,61 @@ const getOneCertificate = async (req, res) => {
     });
   }
 };
+const sendResultResponse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { private_key, status, description } = req.body;
+    console.log(id, private_key, status, description);
+    const myPK = await getMyKeyInternal(req?.decodeToken._id);
+    if (!myPK) {
+      return res.status(200).json({
+        message: "Tài khoản chưa có khoá",
+        success: false,
+      });
+    }
+    const constract = await getWalletSystemByUser(
+      myPK.idSignature,
+      myPK.publicKey,
+      private_key
+    );
+    const dataNotUpdate = await newCertificateModel.findOne({
+      _id: id,
+    });
+    let newDataLand = dataNotUpdate;
+    delete newDataLand._id;
+    delete newDataLand.createdAt;
+    delete newDataLand.updatedAt;
+    const responseBl = await pushDataToBlockchain(
+      constract,
+      {
+        ...newDataLand,
+        thoihansudung: newDataLand.thoihandenghi,
+      },
+      newDataLand.magiayto
+    );
+    const createOneLand = await landModel.create({
+      ...newDataLand.toObject(),
+      thoihansudung: newDataLand.thoihandenghi,
+      txtId: JSON.parse(responseBl).txtId,
+    });
+    const updatedResult = await newCertificateModel.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: status,
+          descriptionReject: description,
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: createOneLand,
+    });
+  } catch (e) {
+    return res.status(400).json({ success: false, message: "Sai khoá bí mật" });
+  }
+};
 module.exports = {
   createNewCeritificate,
   editCertificate,
@@ -213,4 +269,5 @@ module.exports = {
   getCertificateTable,
   getOneCertificate,
   getCertificateThamDinh,
+  sendResultResponse,
 };
