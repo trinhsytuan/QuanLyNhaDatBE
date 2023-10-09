@@ -3,6 +3,7 @@ const {
   pushDataToBlockchain,
 } = require("../../blockchain/baseConfig");
 const { recordNewUpdate } = require("../../constant/constant");
+const { landModel } = require("../../models/landModel");
 const { reCertificateModel } = require("../../models/reCertificate");
 const {
   checkMongoDelete,
@@ -174,6 +175,62 @@ const sendCertificateToOrgReCertificate = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+const sendReCertificateResultResponse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { private_key, status, description, id_form } = req.body;
+    const myPK = await getMyKeyInternal(req?.decodeToken._id);
+    if (!myPK) {
+      return res.status(200).json({
+        message: "Tài khoản chưa có khoá",
+        success: false,
+      });
+    }
+    const constract = await getWalletSystemByUser(
+      myPK.idSignature,
+      myPK.publicKey,
+      private_key
+    );
+    const dataNotUpdate = await landModel.findOne({ magiayto: id });
+    let newDataLand = dataNotUpdate;
+    delete newDataLand._id;
+    delete newDataLand.createdAt;
+    delete newDataLand.updatedAt;
+
+    const responseBl = await pushDataToBlockchain(
+      constract,
+      {
+        ngaycap: new Date(),
+      },
+      newDataLand.magiayto
+    );
+    const updatedResult = await reCertificateModel.updateOne(
+      { _id: id_form },
+      {
+        $set: {
+          status: status,
+          descriptionReject: description,
+        },
+      }
+    );
+    const updatedResult2 = await landModel.updateOne(
+      { magiayto: id },
+      {
+        $set: {
+          ngaycap: new Date(),
+          txtId: JSON.parse(responseBl).txtId,
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: dataNotUpdate,
+    });
+  } catch (e) {
+    return res.status(400).json({ success: false, message: "Sai khoá bí mật" });
+  }
+};
 module.exports = {
   createNewReCertificate,
   getCertificateById,
@@ -182,4 +239,5 @@ module.exports = {
   getAllPaginationReCertificate,
   sendCertificateToOrgReCertificate,
   getAllPaginationReCertificateDepartment,
+  sendReCertificateResultResponse,
 };

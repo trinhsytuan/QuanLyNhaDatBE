@@ -209,7 +209,6 @@ const sendResultResponse = async (req, res) => {
   try {
     const { id } = req.params;
     const { private_key, status, description } = req.body;
-    console.log(id, private_key, status, description);
     const myPK = await getMyKeyInternal(req?.decodeToken._id);
     if (!myPK) {
       return res.status(200).json({
@@ -234,12 +233,14 @@ const sendResultResponse = async (req, res) => {
       {
         ...newDataLand,
         thoihansudung: newDataLand.thoihandenghi,
+        ngaycap: new Date(),
       },
       newDataLand.magiayto
     );
     const createOneLand = await landModel.create({
       ...newDataLand.toObject(),
       thoihansudung: newDataLand.thoihandenghi,
+      ngaycap: new Date(),
       txtId: JSON.parse(responseBl).txtId,
     });
     const updatedResult = await newCertificateModel.updateOne(

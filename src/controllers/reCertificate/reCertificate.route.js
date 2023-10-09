@@ -9,6 +9,7 @@ const {
   getAllPaginationReCertificate,
   sendCertificateToOrgReCertificate,
   getAllPaginationReCertificateDepartment,
+  sendReCertificateResultResponse,
 } = require("./reCertificate.model");
 const router = express.Router();
 router.post("/create", checkReceiver, createNewReCertificate);
@@ -25,5 +26,10 @@ router.get(
   "/getPaginationDepartment",
   checkDepartment,
   getAllPaginationReCertificateDepartment
+);
+router.put(
+  "/sendResultToUser/:id",
+  checkDepartment,
+  sendReCertificateResultResponse
 );
 module.exports = router;
