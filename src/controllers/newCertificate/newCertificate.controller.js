@@ -175,7 +175,6 @@ const getCertificateThamDinh = async (req, res) => {
       req.query;
     if (tennguoisudung) search.page = searchLike(search.tennguoisudung);
     if (diachithuongtru) search.limit = searchLike(search.diachithuongtru);
-    console.log(req.decodeToken.org?._id);
     search.orgResponse = req.decodeToken.org?._id;
     if (status) search.status = status;
     if (limit == 0) pagination = false;
