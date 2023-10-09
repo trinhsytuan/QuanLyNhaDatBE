@@ -26,7 +26,7 @@ const newCertificateSchema = new mongoose.Schema(
     diachikhudat: { type: Number },
     ngaycap: { type: String },
     sophathanh: { type: Number },
-    
+    txtId: { type: String },
   },
   { timestamps: true }
 );
