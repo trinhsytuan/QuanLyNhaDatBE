@@ -3,7 +3,6 @@ const { landModel } = require("../../models/landModel");
 const getLand = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     if (!id)
       return res.status(400).json({
         success: false,
