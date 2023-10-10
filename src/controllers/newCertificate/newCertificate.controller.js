@@ -5,6 +5,7 @@ const {
 const {
   recordNewUpdate,
   TYPE_IMAGE_CAP_MOI,
+  STATUS_TD,
 } = require("../../constant/constant");
 const { landModel } = require("../../models/landModel");
 const { newCertificateModel } = require("../../models/newCertificate");
@@ -221,6 +222,18 @@ const sendResultResponse = async (req, res) => {
       myPK.publicKey,
       private_key
     );
+    if (status == STATUS_TD.reject) {
+      const updatedResult = await newCertificateModel.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            status: status,
+            descriptionReject: description,
+          },
+        }
+      );
+      return res.status(200).json(updatedResult);
+    }
     const dataNotUpdate = await newCertificateModel.findOne({
       _id: id,
     });
@@ -248,7 +261,6 @@ const sendResultResponse = async (req, res) => {
       {
         $set: {
           status: status,
-          descriptionReject: description,
         },
       }
     );

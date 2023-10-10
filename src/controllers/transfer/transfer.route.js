@@ -9,6 +9,7 @@ const {
   getReCertificatePagination,
   sendTransferToOrg,
   getReCertificatePaginationDepartment,
+  sendResultToUserTransfer,
 } = require("./transfer.controller");
 const router = express.Router();
 
@@ -23,4 +24,5 @@ router.get(
   checkDepartment,
   getReCertificatePaginationDepartment
 );
+router.put("/sendResultToOrg/:id", checkDepartment, sendResultToUserTransfer);
 module.exports = router;

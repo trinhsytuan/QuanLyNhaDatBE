@@ -4,6 +4,7 @@ const landModelSchema = new mongoose.Schema(
   {
     tennguoisudung: { type: String, required: true },
     magiayto: { type: String },
+    diachithuongtru: { type: String, required: true },
     cccd: { type: String, required: true },
     noicap: { type: String, require: true },
     ngaycapcccd: { type: Date, require: true },

@@ -2,7 +2,7 @@ const {
   getWalletSystemByUser,
   pushDataToBlockchain,
 } = require("../../blockchain/baseConfig");
-const { recordNewUpdate } = require("../../constant/constant");
+const { recordNewUpdate, STATUS_TD } = require("../../constant/constant");
 const { landModel } = require("../../models/landModel");
 const { reCertificateModel } = require("../../models/reCertificate");
 const {
@@ -186,11 +186,24 @@ const sendReCertificateResultResponse = async (req, res) => {
         success: false,
       });
     }
+
     const constract = await getWalletSystemByUser(
       myPK.idSignature,
       myPK.publicKey,
       private_key
     );
+    if (status == STATUS_TD.reject) {
+      const updatedResult = await reCertificateModel.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            status: status,
+            descriptionReject: description,
+          },
+        }
+      );
+      return res.status(200).json(updatedResult);
+    }
     const dataNotUpdate = await landModel.findOne({ magiayto: id });
     let newDataLand = dataNotUpdate;
     delete newDataLand._id;
@@ -200,6 +213,7 @@ const sendReCertificateResultResponse = async (req, res) => {
     const responseBl = await pushDataToBlockchain(
       constract,
       {
+        ...dataNotUpdate,
         ngaycap: new Date(),
       },
       newDataLand.magiayto
@@ -209,7 +223,6 @@ const sendReCertificateResultResponse = async (req, res) => {
       {
         $set: {
           status: status,
-          descriptionReject: description,
         },
       }
     );

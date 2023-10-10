@@ -27,6 +27,12 @@ const TYPE_IMAGE_CAP_MOI = {
 const TYPE_IMAGE_CAP_LAI = {
   ANH_KHU_DAT: "anh-khu-dat",
 };
+const STATUS_TD = {
+  reject: "reject",
+  accepted: "accepted",
+  pending: "pending",
+  sending: "sending",
+};
 
 module.exports = {
   ROLE_SYSTEM,
@@ -37,4 +43,5 @@ module.exports = {
   TYPE_IMAGE_CAP_MOI,
   sort_time,
   TYPE_IMAGE_CAP_LAI,
+  STATUS_TD,
 };
