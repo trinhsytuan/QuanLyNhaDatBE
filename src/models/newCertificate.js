@@ -24,7 +24,6 @@ const newCertificateSchema = new mongoose.Schema(
     noicap: { type: String, require: true },
     ngaycapcccd: { type: Date, require: true },
     nghenghiep: { type: String, require: true },
-    loainhao: { type: String },
     dientichxaydung: { type: Number },
     dientichsan: { type: Number },
     sohuuchung: { type: Number },
