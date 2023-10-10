@@ -1,8 +1,10 @@
 var nodemailer = require("nodemailer"); // khai báo sử dụng module nodemailer
 require("dotenv").config();
 var transporter = nodemailer.createTransport({
-  service: "Gmail",
+  service: "Other",
   name: "TServices",
+  host: "smtp.sparkpostmail.com",
+  port: "587",
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
