@@ -13,7 +13,7 @@ const landModelSchema = new mongoose.Schema(
     thuadatdangky: { type: String, required: true },
     sothuadat: { type: String, required: true },
     tobandoso: { type: String, required: true },
-    diachithuadat: { type: Number, required: true },
+    diachithuadat: { type: String, required: true },
     sudungrieng: { type: Number, required: true },
     sudungchung: { type: Number, required: true },
     mucdichsd: { type: String, required: true },
