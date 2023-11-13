@@ -1,7 +1,12 @@
+
 const ROLE_SYSTEM = {
   SYSTEM: "system",
   DEPARTMENT: "department",
-  RECEIVER: "receiver",
+  USER: "user",
+  LANDOFFICER: "landofficer", //Cán bộ địa chính
+  VICEPRESIDENTCITY: "vicepresidentcity", //Phó chủ tịch thành phố
+  PRESIDENTWARD: "presidentward", // Phó chủ tịch phường
+  LANDREGISTRATION: "landregistration", // Văn phòng đăng ký đất đại
 };
 const WRONG_PASSWORD = {
   success: false,
