@@ -93,13 +93,12 @@ const sendCertificateToOrg = async (req, res) => {
       dataNotUpdate,
       dataNotUpdate._id
     );
-    console.log(req.body.orgCurrent);
     const updatedResult = await newCertificateModel.updateOne(
       { _id: id },
       {
         $set: {
           status: "sending",
-          orgResponse: "1",
+          orgResponse: getTop(req.body.orgCurrent),
           txtId: JSON.parse(responseBl).txtId,
         },
       }
