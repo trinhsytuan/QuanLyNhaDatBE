@@ -40,9 +40,10 @@ const newCertificateSchema = new mongoose.Schema(
     orgResponse: {
       ref: "org",
       type: mongoose.Schema.Types.ObjectId,
+      default: "6551e4629b8b2de5f827fc09",
     },
     txtId: { type: String },
-    status: { type: String, default: "pending" },
+    status: { type: String, default: "user" },
     descriptionReject: { type: String },
   },
   { timestamps: true }
