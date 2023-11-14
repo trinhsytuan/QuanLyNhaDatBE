@@ -2,7 +2,7 @@ const {
   getWalletSystemByUser,
   pushDataToBlockchain,
 } = require("../../blockchain/baseConfig");
-const { recordNewUpdate, STATUS_TD } = require("../../constant/constant");
+const { recordNewUpdate, STATUS_TD, getTop } = require("../../constant/constant");
 const { landModel } = require("../../models/landModel");
 const { reCertificateModel } = require("../../models/reCertificate");
 const {
@@ -161,7 +161,7 @@ const sendCertificateToOrgReCertificate = async (req, res) => {
       { _id: id },
       {
         $set: {
-          status: "sending",
+          status: "pending",
           orgResponse: getTop(req.body.org_current),
           txtId: JSON.parse(responseBl).txtId,
         },

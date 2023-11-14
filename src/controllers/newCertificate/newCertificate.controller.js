@@ -97,7 +97,7 @@ const sendCertificateToOrg = async (req, res) => {
       { _id: id },
       {
         $set: {
-          status: "sending",
+          status: "pending",
           orgResponse: getTop(req.body.org_current),
           txtId: JSON.parse(responseBl).txtId,
         },

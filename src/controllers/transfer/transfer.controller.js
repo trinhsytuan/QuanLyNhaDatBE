@@ -6,6 +6,7 @@ const {
   recordNewUpdate,
   TYPE_IMAGE_CAP_LAI,
   STATUS_TD,
+  getTop,
 } = require("../../constant/constant");
 const { landModel } = require("../../models/landModel");
 const { transferModel } = require("../../models/transfer");
@@ -180,7 +181,7 @@ const sendTransferToOrg = async (req, res) => {
       { _id: id },
       {
         $set: {
-          status: "sending",
+          status: "pending",
           orgResponse: getTop(req.body.org_current),
           txtId: JSON.parse(responseBl).txtId,
         },
