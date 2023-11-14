@@ -67,6 +67,7 @@ const removeCertificate = async (req, res) => {
     res.status(400).json({ success: false, message: e.toString() });
   }
 };
+
 const sendCertificateToOrg = async (req, res) => {
   try {
     const { id } = req.params;

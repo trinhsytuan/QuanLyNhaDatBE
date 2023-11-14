@@ -12,24 +12,24 @@ const {
   sendReCertificateResultResponse,
 } = require("./reCertificate.model");
 const router = express.Router();
-router.post("/create", checkReceiver, createNewReCertificate);
+router.post("/create",  createNewReCertificate);
 router.get("/getById/:id", getCertificateById);
 router.get("/getPagination", getAllPaginationReCertificate);
-router.delete("/deleteById/:id", checkReceiver, deleteReCertificate);
-router.put("/edit/:id", checkReceiver, editReCertificate);
+router.delete("/deleteById/:id",  deleteReCertificate);
+router.put("/edit/:id",  editReCertificate);
 router.put(
   "/sendCertificateToOrg/:id",
-  checkReceiver,
+  
   sendCertificateToOrgReCertificate
 );
 router.get(
   "/getPaginationDepartment",
-  checkDepartment,
+  
   getAllPaginationReCertificateDepartment
 );
 router.put(
   "/sendResultToUser/:id",
-  checkDepartment,
+  
   sendReCertificateResultResponse
 );
 module.exports = router;

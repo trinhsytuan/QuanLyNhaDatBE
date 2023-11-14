@@ -13,16 +13,16 @@ const {
 } = require("./transfer.controller");
 const router = express.Router();
 
-router.post("/create", checkReceiver, createReCertificate);
+router.post("/create",  createReCertificate);
 router.get("/getById/:id", getChuyenNhuong);
-router.put("/editReCertificate/:id", checkReceiver, editReCertificate);
-router.delete("/deleteReCeritificate/:id", checkReceiver, removeReCertificate);
-router.get("/getTableChuyenNhuong", checkReceiver, getReCertificatePagination);
-router.put("/sendCertificateToOrg/:id", checkReceiver, sendTransferToOrg);
+router.put("/editReCertificate/:id",  editReCertificate);
+router.delete("/deleteReCeritificate/:id",  removeReCertificate);
+router.get("/getTableChuyenNhuong",  getReCertificatePagination);
+router.put("/sendCertificateToOrg/:id",  sendTransferToOrg);
 router.get(
   "/getTableChuyenNhuongDepartment",
-  checkDepartment,
+  
   getReCertificatePaginationDepartment
 );
-router.put("/sendResultToOrg/:id", checkDepartment, sendResultToUserTransfer);
+router.put("/sendResultToOrg/:id",  sendResultToUserTransfer);
 module.exports = router;

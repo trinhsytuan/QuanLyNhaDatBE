@@ -1,4 +1,3 @@
-
 const ROLE_SYSTEM = {
   SYSTEM: "system",
   DEPARTMENT: "department",
@@ -38,7 +37,13 @@ const STATUS_TD = {
   pending: "pending",
   sending: "sending",
 };
-
+const getTop = (id) => {
+  if (id == "6551e4629b8b2de5f827fc09") return "655345032d09038a42cd8751";
+  if (id == "655345032d09038a42cd8751") return "6551e5ac9b8b2de5f827fc3b";
+  if (id == "6551e5ac9b8b2de5f827fc3b") return "655345142d09038a42cd8755";
+  if (id == "655345142d09038a42cd8755") return "655333de9b8b2de5f827fcd9";
+  if (id == "655333de9b8b2de5f827fcd9") return "655345462d09038a42cd875f";
+};
 module.exports = {
   ROLE_SYSTEM,
   WRONG_PASSWORD,
@@ -49,4 +54,5 @@ module.exports = {
   sort_time,
   TYPE_IMAGE_CAP_LAI,
   STATUS_TD,
+  getTop,
 };
