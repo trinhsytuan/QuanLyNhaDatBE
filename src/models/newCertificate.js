@@ -43,7 +43,7 @@ const newCertificateSchema = new mongoose.Schema(
       default: "6551e4629b8b2de5f827fc09",
     },
     txtId: { type: String },
-    status: { type: String, default: "user" },
+    status: { type: String, default: "pending" },
     descriptionReject: { type: String },
   },
   { timestamps: true }
