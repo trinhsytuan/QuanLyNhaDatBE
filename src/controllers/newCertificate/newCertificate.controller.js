@@ -107,6 +107,7 @@ const sendCertificateToOrg = async (req, res) => {
       message: checkMongoUpdate(updatedResult, "Gửi thẩm định thành công"),
     });
   } catch (e) {
+    console.log(e);
     res.status(400).json({ success: false, message: "Sai khoá bí mật" });
   }
 };
