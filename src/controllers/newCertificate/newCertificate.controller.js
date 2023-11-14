@@ -84,12 +84,6 @@ const sendCertificateToOrg = async (req, res) => {
       myPK.publicKey,
       private_key
     );
-    if (!req?.decodeToken?.orgTop) {
-      return res.status(400).json({
-        message: "Tài khoản chưa cấu hình tổ chức UBND / Tỉnh",
-        success: false,
-      });
-    }
     const dataNotUpdate = await newCertificateModel.findOne({
       _id: id,
     });
