@@ -6,6 +6,7 @@ const {
   recordNewUpdate,
   TYPE_IMAGE_CAP_MOI,
   STATUS_TD,
+  getTop,
 } = require("../../constant/constant");
 const { landModel } = require("../../models/landModel");
 const { newCertificateModel } = require("../../models/newCertificate");
